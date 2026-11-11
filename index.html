@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jossy Kassa Ferede | Visual Storyteller & Creator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#05080e',
+                        cardBg: '#101622',
+                        cyanAccent: '#00f2fe',
+                        blueAccent: '#4facfe'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #05080e;
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(5, 8, 14, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(16, 22, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Glowing Cyan Aura around the Profile Photo */
+        .profile-aura {
+            position: relative;
+        }
+        .profile-aura::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #00f2fe, #4facfe, rgba(0,242,254,0.1), #00f2fe);
+            animation: rotateAura 8s linear infinite;
+            filter: blur(20px);
+            opacity: 0.7;
+            z-index: 0;
+        }
+        @keyframes rotateAura {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-ring {
+            position: relative;
+            z-index: 1;
+            border-radius: 50%;
+            padding: 6px;
+            background: linear-gradient(135deg, #00f2fe, #101622, #4facfe);
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Interactive Animated Motion Background Canvas */
+        #motion-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -2;
+            background: linear-gradient(180deg, #05080e 0%, #090e18 100%);
+        }
+
+        /* Low Poly / Geometric Wireframe Grid Lines at Bottom */
+        .cyber-grid {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50vh;
+            background-image: 
+                linear-gradient(to right, rgba(0, 242, 254, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 242, 254, 0.08) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: -1;
+            transform: perspective(600px) rotateX(60deg);
+            transform-origin: bottom center;
+        }
+
+        /* Glowing Curved Timeline */
+        .timeline-container {
+            position: relative;
+            width: 100%;
+            height: 140px;
+        }
+        .timeline-svg path {
+            stroke: #00f2fe;
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 0 8px #00f2fe);
+        }
+
+        /* Scroll Animation Utility Classes */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-on-scroll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-400 selection:text-black">
+
+    <!-- Creative Background Motion Canvas & Grid -->
+    <canvas id="motion-canvas"></canvas>
+    <div class="cyber-grid"></div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#home" class="flex items-center gap-3 group">
+                <span class="font-extrabold text-2xl tracking-widest text-white group-hover:text-cyan-400 transition-colors">
+                    JOSSY<span class="text-cyan-400">.</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-xs font-bold tracking-widest text-cyan-400 hover:text-white transition-colors">HOME</a>
+                <a href="#about" class="text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors">ABOUT</a>
+                <a href="#journey" class="text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors">JOURNEY</a>
+                <a href="#skills" class="text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors">SKILLS</a>
+                <a href="#works" class="text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors">WORKS</a>
+                <a href="#contact" class="text-xs font-bold tracking-widest text-slate-400 hover:text-cyan-400 transition-colors">CONTACT</a>
+            </nav>
+
+            <div class="hidden md:block">
+                <a href="#contact" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold text-xs tracking-wider transition-all shadow-lg shadow-cyan-500/20">
+                    COLLABORATE
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-btn" class="md:hidden text-slate-300 hover:text-cyan-400 text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-nav border-b border-white/10 px-6 py-6">
+            <div class="flex flex-col gap-4">
+                <a href="#home" class="mobile-link text-cyan-400 font-bold text-sm">HOME</a>
+                <a href="#about" class="mobile-link text-slate-300 hover:text-cyan-400 font-bold text-sm">ABOUT</a>
+                <a href="#journey" class="mobile-link text-slate-300 hover:text-cyan-400 font-bold text-sm">JOURNEY</a>
+                <a href="#skills" class="mobile-link text-slate-300 hover:text-cyan-400 font-bold text-sm">SKILLS</a>
+                <a href="#works" class="mobile-link text-slate-300 hover:text-cyan-400 font-bold text-sm">WORKS</a>
+                <a href="#contact" class="mobile-link text-slate-300 hover:text-cyan-400 font-bold text-sm">CONTACT</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="home" class="min-h-[calc(100vh-80px)] flex items-center justify-center py-16 px-6 relative">
+            <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Hero Text -->
+                <div class="lg:col-span-7 flex flex-col items-start space-y-6 reveal-on-scroll">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        Visual Storyteller & Creator
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl font-extrabold leading-none tracking-tight">
+                        Jossy Kassa <br/>
+                        <span class="bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">Ferede</span>
+                    </h1>
+
+                    <p class="text-slate-400 text-base max-w-lg leading-relaxed">
+                        Cinematographer, Photographer, Video Editor, and Graphic Designer based in Addis Ababa, Ethiopia. (Since 2018)
+                    </p>
+
+                    <!-- Glowing Action Buttons -->
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#works" class="px-6 py-3 rounded-full bg-cyan-500/10 border border-cyan-400 text-cyan-300 hover:bg-cyan-400 hover:text-black font-bold text-xs tracking-wider transition-all shadow-[0_0_20px_rgba(0,242,254,0.3)] hover:shadow-[0_0_30px_rgba(0,242,254,0.6)] flex items-center gap-2">
+                            <span>👁️</span> view my work
+                        </a>
+                        <a href="#about" class="px-6 py-3 rounded-full bg-slate-900/80 border border-slate-700 text-slate-200 hover:bg-white hover:text-black font-bold text-xs tracking-wider transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] flex items-center gap-2">
+                            <span>📖</span> my story
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Profile Image (photo_6023675213440028151_y.jpg) -->
+                <div class="lg:col-span-5 flex justify-center reveal-on-scroll" data-delay="200">
+                    <div class="profile-aura">
+                        <div class="profile-ring w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] rounded-full overflow-hidden">
+                            <img src="photo_6023675213440028151_y.jpg" 
+                                 alt="Jossy Kassa Ferede" 
+                                 class="w-full h-full object-cover rounded-full"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/600x600/101622/00f2fe?text=Jossy';"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- About Jossy Section -->
+        <section id="about" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- About Image Card (photo_6023675213440028153_y.jpg) -->
+                    <div class="lg:col-span-5 reveal-on-scroll">
+                        <div class="glass-card p-3 rounded-2xl relative group">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
+                            <img src="photo_6023675213440028153_y.jpg" 
+                                 alt="About Jossy" 
+                                 class="relative w-full h-[400px] object-cover rounded-xl"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/600x700/101622/00f2fe?text=About+Jossy';"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- About Text Content -->
+                    <div class="lg:col-span-7 flex flex-col space-y-6 reveal-on-scroll">
+                        <div class="inline-block text-cyan-400 text-xs font-extrabold tracking-widest uppercase">The Visionary</div>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold">About Jossy</h2>
+                        
+                        <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+                            Jossy Kassa Ferede is a dedicated and versatile digital creator based in Addis Ababa, Ethiopia, with a strong foundation in photography, cinematography, and video editing, combined with a sharp eye for graphic design. Passionate about visual storytelling, he continuously refines his technical craft to build engaging, high-quality digital content.
+                        </p>
+                        
+                        <p class="text-slate-400 leading-relaxed text-sm">
+                            Eager to collaborate with innovative teams and bring unique visual concepts to life across multimedia formats.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <div class="glass-card px-5 py-3 rounded-xl">
+                                <span class="text-xs text-slate-400 block mb-1">Languages</span>
+                                <span class="font-bold text-sm text-white">Amharic, English</span>
+                            </div>
+                            <div class="glass-card px-5 py-3 rounded-xl">
+                                <span class="text-xs text-slate-400 block mb-1">Experience</span>
+                                <span class="font-bold text-sm text-cyan-400">Since 2018</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Journey Section -->
+        <section id="journey" class="py-24 px-6 relative bg-slate-950/40">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                    <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Chronology</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">My Journey</h2>
+                </div>
+
+                <!-- Glowing Curved Timeline Graphic -->
+                <div class="timeline-container reveal-on-scroll mb-12 hidden sm:block">
+                    <svg class="timeline-svg" viewBox="0 0 1000 120" preserveAspectRatio="none">
+                        <path d="M 0 60 Q 250 10, 500 60 T 1000 60" />
+                        <circle cx="200" cy="35" r="7" fill="#00f2fe" filter="drop-shadow(0 0 6px #00f2fe)" />
+                        <circle cx="500" cy="60" r="7" fill="#00f2fe" filter="drop-shadow(0 0 6px #00f2fe)" />
+                        <circle cx="800" cy="35" r="7" fill="#00f2fe" filter="drop-shadow(0 0 6px #00f2fe)" />
+                    </svg>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Journey Card 1 -->
+                    <div class="glass-card p-8 rounded-2xl reveal-on-scroll">
+                        <span class="text-cyan-400 text-xs font-bold tracking-wider block mb-2">04 / 2018 — PRESENT</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Photographer, Video Editor & Graphic Designer</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                            Delivering full-scale creative services including cinematic photography, video production, color grading, and graphic design for diverse clients and creative agencies.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 text-xs">Photography</span>
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 text-xs">Video Editing</span>
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 text-xs">Graphic Design</span>
+                        </div>
+                    </div>
+
+                    <!-- Journey Card 2 -->
+                    <div class="glass-card p-8 rounded-2xl reveal-on-scroll">
+                        <span class="text-cyan-400 text-xs font-bold tracking-wider block mb-2">VISUAL ART & DIRECTION</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Cinematic Storytelling & Production</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                            Expanding technical capabilities in lighting setups, stabilizing gimbals, advanced grading codecs, and building impactful digital brand identities.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 text-xs">Lighting</span>
+                            <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-300 text-xs">Color Grading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                    <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Expertise</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Technical Skills</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Production Stack Progress -->
+                    <div class="glass-card p-8 rounded-2xl space-y-6 reveal-on-scroll">
+                        <h3 class="text-xl font-bold text-white mb-6">Production Stack</h3>
+
+                        <div>
+                            <div class="flex justify-between mb-2 text-sm">
+                                <span class="font-medium text-slate-300">Photography & Cinematography</span>
+                                <span class="text-cyan-400 font-bold">95%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2 text-sm">
+                                <span class="font-medium text-slate-300">Video Editing & Color Grading</span>
+                                <span class="text-cyan-400 font-bold">92%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2 text-sm">
+                                <span class="font-medium text-slate-300">Graphic Design & Retouching</span>
+                                <span class="text-cyan-400 font-bold">88%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" style="width: 88%"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between mb-2 text-sm">
+                                <span class="font-medium text-slate-300">Lighting & Production Setup</span>
+                                <span class="text-cyan-400 font-bold">90%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Soft Skills & Toolkit -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col justify-between reveal-on-scroll">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-4">Toolkit & Soft Skills</h3>
+                            <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                                Equipped with fast learning abilities, problem-solving techniques, and seamless communication to deliver professional visual assets under tight schedules.
+                            </p>
+
+                            <div class="flex flex-wrap gap-3">
+                                <span class="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold">Camera Operation</span>
+                                <span class="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold">3-Point Lighting</span>
+                                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold">DJI Stabilizers & Gimbals</span>
+                                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold">Photoshop & Illustrator</span>
+                                <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs font-semibold">Codec Management</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-4 rounded-xl bg-slate-900/60 border border-white/5 flex items-center gap-4">
+                            <i class="fa-solid fa-clapperboard text-2xl text-cyan-400"></i>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Visual Standard</h4>
+                                <p class="text-xs text-slate-400">4K/1080p Cinematic Workflow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Works Section (Configured with your exact uploaded files) -->
+        <section id="works" class="py-24 px-6 relative bg-slate-950/40">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                    <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Selected Portfolio</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Creative Works</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Work Item 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-001 (1).jpeg" alt="Sacred Reading" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Sacred Devotion & Scripture</h3>
+                            <p class="text-slate-400 text-sm">Dramatic side-lighting and devotional warmth.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-001.jpeg" alt="Traditional Ceremony" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Sanctuary Blessing</h3>
+                            <p class="text-slate-400 text-sm">Warm sunlight filtering through cathedral windows.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-002 (1).jpeg" alt="Cathedral Interior" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Cathedral Murals & Presence</h3>
+                            <p class="text-slate-400 text-sm">Immersive color grading and interior storytelling.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 4 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-002.jpeg" alt="Royal Wedding Red Carpet" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Red Carpet Regalia</h3>
+                            <p class="text-slate-400 text-sm">High-contrast top-down cinematic framing.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 5 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-003.jpg" alt="Dome Murals Ceremony" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Dome of the Sanctuary</h3>
+                            <p class="text-slate-400 text-sm">Wide composition featuring magnificent church art.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 6 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-004.jpeg" alt="Monochrome Chandelier Service" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Monochrome Chandelier Vows</h3>
+                            <p class="text-slate-400 text-sm">Black and white emotional architectural balance.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 7 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="image-005.jpg" alt="Exterior Church Facade" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Church Exterior Architecture</h3>
+                            <p class="text-slate-400 text-sm">Grand facade and daylight composition.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 8 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="snaptik-app-7699928642843036948-slide-5.jpg" alt="Royal Crown Portrait" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Crown & Velvet Regalia</h3>
+                            <p class="text-slate-400 text-sm">Royal traditional ceremonial portraiture.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 9: Video 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden bg-black">
+                            <video controls class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <source src="lv_0_20261111141827.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold pointer-events-none">Cinematography Reel 1</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Cinematic Highlight Reel I</h3>
+                            <p class="text-slate-400 text-sm">Dynamic motion editing and color grading.</p>
+                        </div>
+                    </div>
+
+                    <!-- Work Item 10: Video 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll">
+                        <div class="relative h-72 overflow-hidden bg-black">
+                            <video controls class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <source src="snaptik_7686432504915447048_hd (1).mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold pointer-events-none">Cinematography Reel 2</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">Cinematic Highlight Reel II</h3>
+                            <p class="text-slate-400 text-sm">Atmospheric storytelling and cinematic sound design.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                    <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Get In Touch</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Let's Create Together</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <!-- Contact Info -->
+                    <div class="lg:col-span-5 glass-card p-8 rounded-2xl space-y-6 reveal-on-scroll">
+                        <h3 class="text-2xl font-bold text-white">Contact Details</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Available for worldwide travel & remote post-production. Reach out directly via phone, telegram, or instagram.
+                        </p>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold">
+                                    📍
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-400 block">Location</span>
+                                    <span class="font-semibold text-white text-sm">Addis Ababa, Ethiopia</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold">
+                                    ✉️
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-400 block">Email</span>
+                                    <a href="mailto:jhisephkassa@gmail.com" class="font-semibold text-white text-sm hover:text-cyan-400 transition-colors">jhisephkassa@gmail.com</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Direct Phone Call Button -->
+                        <div class="pt-2">
+                            <a href="tel:+251968582035" class="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold text-sm tracking-wide transition-all shadow-lg shadow-cyan-500/25">
+                                <i class="fa-solid fa-phone"></i> +251 968 582 035
+                            </a>
+                        </div>
+
+                        <!-- Social Media Contact Buttons -->
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <a href="https://t.me/Lijjoseph" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 font-bold text-xs tracking-wider transition-all">
+                                <i class="fa-brands fa-telegram text-base"></i> Telegram
+                            </a>
+                            <a href="https://www.instagram.com/daniel_g.medhin" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 font-bold text-xs tracking-wider transition-all">
+                                <i class="fa-brands fa-instagram text-base"></i> Instagram
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="lg:col-span-7 glass-card p-8 rounded-2xl reveal-on-scroll">
+                        <form onsubmit="handleContactSubmit(event)" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase mb-2">Your Name</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400 transition-colors text-sm" placeholder="Full Name">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-300 uppercase mb-2">Your Phone / Email</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400 transition-colors text-sm" placeholder="contact@example.com">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-300 uppercase mb-2">Message</label>
+                                <textarea rows="4" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400 transition-colors text-sm" placeholder="Describe your project or collaboration..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold text-sm tracking-wide transition-all shadow-lg shadow-cyan-400/20">
+                                SEND MESSAGE
+                            </button>
+
+                            <div id="success-msg" class="hidden p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs text-center font-bold">
+                                Thank you! Your message has been prepared successfully.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/5 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 JOSSY. All rights reserved.</p>
+            <p>Visual Storyteller & Creator — Addis Ababa, Ethiopia</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts & Motion Graphics Background Engine -->
+    <script>
+        // Motion Graphics Particle & Glowing Nodes Canvas Animation
+        const canvas = document.getElementById('motion-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 2 + 1;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 242, 254, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        const particleCount = Math.min(window.innerWidth > 768 ? 60 : 30, 80);
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateMotionBg() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(0, 242, 254, ${0.15 * (1 - dist / 130)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateMotionBg);
+        }
+
+        animateMotionBg();
+
+        // Mobile Navigation Toggle
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.className = mobileMenu.classList.contains('hidden') ? 'fa-solid fa-bars' : 'fa-solid fa-xmark';
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.className = 'fa-solid fa-bars';
+            });
+        });
+
+        // Scroll Reveal Animation Observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Contact Form Feedback
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const msg = document.getElementById('success-msg');
+            msg.classList.remove('hidden');
+            e.target.reset();
+            setTimeout(() => {
+                msg.classList.add('hidden');
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
