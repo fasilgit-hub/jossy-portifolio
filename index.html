@@ -103,16 +103,17 @@
             box-shadow: 0 0 50px rgba(0, 242, 254, 0.4);
         }
 
-        /* Grayscale to Colorful Transition & Head Framing */
+        /* Grayscale to Colorful Transition & Full Portrait Fit */
         .hero-profile-img {
             filter: grayscale(100%) contrast(1.05);
-            object-position: center 15%;
+            object-fit: contain;
+            background-color: #05080e;
             transition: filter 0.6s ease, transform 0.6s ease;
         }
         .profile-aura:hover .hero-profile-img,
         .profile-aura.color-active .hero-profile-img {
             filter: grayscale(0%) contrast(1);
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
         /* Interactive Animated Motion Background Canvas */
@@ -253,13 +254,13 @@
                     </div>
                 </div>
 
-                <!-- Right Profile Image (Grayscale -> Colorful on Hover/Click + Full Head Framing) -->
+                <!-- Right Profile Image (Grayscale -> Colorful on Hover/Click + Uncropped Full Portrait) -->
                 <div class="lg:col-span-5 flex justify-center reveal-on-scroll" data-delay="200">
                     <div class="profile-aura" onclick="this.classList.toggle('color-active')" title="Click or hover to reveal color">
                         <div class="profile-ring w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] rounded-full overflow-hidden bg-dark">
                             <img src="photo_6023675213440028151_y.jpg" 
                                  alt="Jossy Kassa Ferede" 
-                                 class="w-full h-full object-cover rounded-full hero-profile-img"
+                                 class="w-full h-full rounded-full hero-profile-img"
                                  onerror="this.onerror=null; this.src='https://placehold.co/600x600/101622/00f2fe?text=Jossy';"
                             >
                         </div>
@@ -274,13 +275,13 @@
             <div class="max-w-7xl mx-auto">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
-                    <!-- About Image Card -->
+                    <!-- About Image Card (Full Original Aspect Ratio - No Cropping) -->
                     <div class="lg:col-span-5 reveal-on-scroll">
                         <div class="glass-card p-3 rounded-2xl relative group">
                             <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
                             <img src="photo_6023675213440028153_y.jpg" 
                                  alt="About Jossy" 
-                                 class="relative w-full h-[460px] object-cover object-top rounded-xl"
+                                 class="relative w-full h-auto rounded-xl"
                                  onerror="this.onerror=null; this.src='https://placehold.co/600x700/101622/00f2fe?text=About+Jossy';"
                             >
                         </div>
@@ -473,7 +474,7 @@
                         </div>
 
                         <!-- Live Mini Previews Grid inside Folder -->
-                        <div id="folder-photo-previews" class="grid grid-cols-3 gap-3 h-28 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
+                        <div id="folder-photo-previews" class="grid grid-cols-3 gap-3 h-36 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
                             <div class="flex items-center justify-center text-xs text-slate-500 col-span-3">Loading previews...</div>
                         </div>
 
@@ -497,7 +498,7 @@
                         </div>
 
                         <!-- Live Mini Previews Grid inside Folder -->
-                        <div id="folder-video-previews" class="grid grid-cols-3 gap-3 h-28 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
+                        <div id="folder-video-previews" class="grid grid-cols-3 gap-3 h-36 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
                             <div class="flex items-center justify-center text-xs text-slate-500 col-span-3">Loading previews...</div>
                         </div>
 
@@ -509,7 +510,7 @@
 
                 </div>
 
-                <!-- VIEW 2: Inside Folder List View (Initially Hidden) -->
+                <!-- VIEW 2: Inside Folder Full-Size Uncropped Masonry View -->
                 <div id="folder-contents-view" class="hidden">
                     <div class="flex items-center justify-between mb-10">
                         <button onclick="backToFolders()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-400/40 text-cyan-400 hover:bg-cyan-400 hover:text-black font-bold text-xs tracking-wider transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
@@ -518,8 +519,8 @@
                         <h3 id="current-folder-title" class="text-2xl font-extrabold text-white">Folder Contents</h3>
                     </div>
 
-                    <div id="dynamic-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- Loaded items appear here -->
+                    <div id="dynamic-works-grid" class="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
+                        <!-- Full-aspect-ratio items appear here without any cropping -->
                     </div>
                 </div>
 
@@ -685,12 +686,12 @@
             document.getElementById('photo-count-badge').innerText = `${photos.length} Shots`;
             document.getElementById('video-count-badge').innerText = `${videos.length} Reels`;
 
-            // Populate Photo Folder Previews (Top-aligned so faces aren't cut off)
+            // Populate Photo Folder Previews (Full original frame visible with object-contain)
             const photoPreviewContainer = document.getElementById('folder-photo-previews');
             if (photos.length > 0) {
                 photoPreviewContainer.innerHTML = photos.slice(0, 3).map(p => `
-                    <div class="rounded-lg overflow-hidden h-full">
-                        <img src="${encodeURI(p.name)}" class="w-full h-full object-cover object-top">
+                    <div class="rounded-lg overflow-hidden h-full bg-black/50 flex items-center justify-center">
+                        <img src="${encodeURI(p.name)}" class="w-full h-full object-contain">
                     </div>
                 `).join('');
             } else {
@@ -729,13 +730,13 @@
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll active';
+                card.className = 'glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll active break-inside-avoid mb-8';
 
                 if (item.type === 'photo') {
                     card.innerHTML = `
-                        <div class="relative h-96 overflow-hidden bg-slate-900">
-                            <img src="${encodeURI(item.name)}" alt="${item.title}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" loading="lazy">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                        <div class="relative w-full overflow-hidden bg-slate-900">
+                            <img src="${encodeURI(item.name)}" alt="${item.title}" class="w-full h-auto block group-hover:scale-[1.02] transition-transform duration-700" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622]/70 via-transparent to-transparent pointer-events-none"></div>
                             <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
                         </div>
                         <div class="p-6">
@@ -745,8 +746,8 @@
                     `;
                 } else {
                     card.innerHTML = `
-                        <div class="relative h-96 overflow-hidden bg-black">
-                            <video controls preload="metadata" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
+                        <div class="relative w-full overflow-hidden bg-black">
+                            <video controls preload="metadata" class="w-full h-auto block">
                                 <source src="${encodeURI(item.name)}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
