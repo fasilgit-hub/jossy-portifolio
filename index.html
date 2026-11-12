@@ -76,6 +76,7 @@
         /* Glowing Cyan Aura around the Profile Photo */
         .profile-aura {
             position: relative;
+            cursor: pointer;
         }
         .profile-aura::before {
             content: '';
@@ -100,6 +101,18 @@
             padding: 6px;
             background: linear-gradient(135deg, #00f2fe, #101622, #4facfe);
             box-shadow: 0 0 50px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Grayscale to Colorful Transition & Head Framing */
+        .hero-profile-img {
+            filter: grayscale(100%) contrast(1.05);
+            object-position: center 15%;
+            transition: filter 0.6s ease, transform 0.6s ease;
+        }
+        .profile-aura:hover .hero-profile-img,
+        .profile-aura.color-active .hero-profile-img {
+            filter: grayscale(0%) contrast(1);
+            transform: scale(1.03);
         }
 
         /* Interactive Animated Motion Background Canvas */
@@ -240,13 +253,13 @@
                     </div>
                 </div>
 
-                <!-- Right Profile Image -->
+                <!-- Right Profile Image (Grayscale -> Colorful on Hover/Click + Full Head Framing) -->
                 <div class="lg:col-span-5 flex justify-center reveal-on-scroll" data-delay="200">
-                    <div class="profile-aura">
-                        <div class="profile-ring w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] rounded-full overflow-hidden">
+                    <div class="profile-aura" onclick="this.classList.toggle('color-active')" title="Click or hover to reveal color">
+                        <div class="profile-ring w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] rounded-full overflow-hidden bg-dark">
                             <img src="photo_6023675213440028151_y.jpg" 
                                  alt="Jossy Kassa Ferede" 
-                                 class="w-full h-full object-cover rounded-full"
+                                 class="w-full h-full object-cover rounded-full hero-profile-img"
                                  onerror="this.onerror=null; this.src='https://placehold.co/600x600/101622/00f2fe?text=Jossy';"
                             >
                         </div>
@@ -267,7 +280,7 @@
                             <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
                             <img src="photo_6023675213440028153_y.jpg" 
                                  alt="About Jossy" 
-                                 class="relative w-full h-[400px] object-cover rounded-xl"
+                                 class="relative w-full h-[460px] object-cover object-top rounded-xl"
                                  onerror="this.onerror=null; this.src='https://placehold.co/600x700/101622/00f2fe?text=About+Jossy';"
                             >
                         </div>
@@ -672,12 +685,12 @@
             document.getElementById('photo-count-badge').innerText = `${photos.length} Shots`;
             document.getElementById('video-count-badge').innerText = `${videos.length} Reels`;
 
-            // Populate Photo Folder Previews
+            // Populate Photo Folder Previews (Top-aligned so faces aren't cut off)
             const photoPreviewContainer = document.getElementById('folder-photo-previews');
             if (photos.length > 0) {
                 photoPreviewContainer.innerHTML = photos.slice(0, 3).map(p => `
                     <div class="rounded-lg overflow-hidden h-full">
-                        <img src="${encodeURI(p.name)}" class="w-full h-full object-cover">
+                        <img src="${encodeURI(p.name)}" class="w-full h-full object-cover object-top">
                     </div>
                 `).join('');
             } else {
@@ -720,8 +733,8 @@
 
                 if (item.type === 'photo') {
                     card.innerHTML = `
-                        <div class="relative h-72 overflow-hidden">
-                            <img src="${encodeURI(item.name)}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                        <div class="relative h-96 overflow-hidden bg-slate-900">
+                            <img src="${encodeURI(item.name)}" alt="${item.title}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700" loading="lazy">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
                             <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
                         </div>
@@ -732,8 +745,8 @@
                     `;
                 } else {
                     card.innerHTML = `
-                        <div class="relative h-72 overflow-hidden bg-black">
-                            <video controls preload="metadata" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="relative h-96 overflow-hidden bg-black">
+                            <video controls preload="metadata" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
                                 <source src="${encodeURI(item.name)}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
