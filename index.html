@@ -56,8 +56,8 @@
             transform: translateY(-2px);
         }
 
-        /* Folder Portal Cards */
-        .folder-portal {
+        /* Interactive Folder Cards */
+        .folder-card {
             background: rgba(16, 22, 34, 0.85);
             backdrop-filter: blur(16px);
             border: 2px solid rgba(0, 242, 254, 0.25);
@@ -67,26 +67,10 @@
             position: relative;
             overflow: hidden;
         }
-        .folder-portal::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0,242,254,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-        .folder-portal:hover {
+        .folder-card:hover {
             border-color: #00f2fe;
-            box-shadow: 0 0 35px rgba(0, 242, 254, 0.35);
-            transform: translateY(-5px);
-        }
-        .folder-portal:hover::before {
-            opacity: 1;
-        }
-        .folder-portal.active-portal {
-            border-color: #00f2fe;
-            background: rgba(0, 242, 254, 0.1);
             box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
+            transform: translateY(-5px);
         }
 
         /* Glowing Cyan Aura around the Profile Photo */
@@ -450,49 +434,82 @@
             </div>
         </section>
 
-        <!-- Works Section with Interactive Folders & Portals -->
+        <!-- Works Section with Interactive Folders Overview -->
         <section id="works" class="py-24 px-6 relative bg-slate-950/40">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
                     <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Selected Portfolio</span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Creative Works</h2>
-                    <p class="text-slate-400 text-sm mt-3">Select a folder below to explore photography shots or cinematography reels.</p>
+                    <p class="text-slate-400 text-sm mt-3">Explore media folders below to view shots and reels.</p>
                 </div>
 
-                <!-- Interactive Folder Selection Portals -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16 reveal-on-scroll">
-                    <!-- Photography Folder Portal -->
-                    <div id="btn-photo-folder" onclick="filterGallery('photos')" class="folder-portal p-8 rounded-2xl flex items-center gap-6 active-portal">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.3)]">
-                            <i class="fa-solid fa-images"></i>
-                        </div>
+                <!-- VIEW 1: Folders Overview (Interactive Folder Cards with live previews) -->
+                <div id="folders-view" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto reveal-on-scroll">
+                    
+                    <!-- Photography Folder Card -->
+                    <div onclick="openFolder('photos')" class="folder-card p-8 rounded-2xl flex flex-col justify-between group">
                         <div>
-                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Gallery Folder</span>
-                            <h3 class="text-xl font-extrabold text-white">Explore Shots</h3>
-                            <p class="text-slate-400 text-xs mt-1">Cinematic portraits and sanctuary frames</p>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                                <span id="photo-count-badge" class="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-xs font-bold">0 Shots</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Photography Gallery</h3>
+                            <p class="text-slate-400 text-sm mb-6">Explore professional portraits, church architecture, and cultural frames.</p>
+                        </div>
+
+                        <!-- Live Mini Previews Grid inside Folder -->
+                        <div id="folder-photo-previews" class="grid grid-cols-3 gap-3 h-28 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
+                            <div class="flex items-center justify-center text-xs text-slate-500 col-span-3">Loading previews...</div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-cyan-400 font-bold text-sm tracking-wide group-hover:translate-x-1 transition-transform">
+                            <span>Open Gallery Folder</span>
+                            <i class="fa-solid fa-arrow-right"></i>
                         </div>
                     </div>
 
-                    <!-- Cinematography Folder Portal -->
-                    <div id="btn-video-folder" onclick="filterGallery('videos')" class="folder-portal p-8 rounded-2xl flex items-center gap-6">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.3)]">
-                            <i class="fa-solid fa-film"></i>
-                        </div>
+                    <!-- Cinematography Folder Card -->
+                    <div onclick="openFolder('videos')" class="folder-card p-8 rounded-2xl flex flex-col justify-between group">
                         <div>
-                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Reels Folder</span>
-                            <h3 class="text-xl font-extrabold text-white">Explore Reels</h3>
-                            <p class="text-slate-400 text-xs mt-1">Motion highlights and color grading</p>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                                <span id="video-count-badge" class="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-xs font-bold">0 Reels</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Cinematography Reels</h3>
+                            <p class="text-slate-400 text-sm mb-6">Explore dynamic motion reels, color grading, and video edits.</p>
                         </div>
+
+                        <!-- Live Mini Previews Grid inside Folder -->
+                        <div id="folder-video-previews" class="grid grid-cols-3 gap-3 h-28 overflow-hidden rounded-xl bg-slate-900/80 p-2 border border-white/5">
+                            <div class="flex items-center justify-center text-xs text-slate-500 col-span-3">Loading previews...</div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-cyan-400 font-bold text-sm tracking-wide group-hover:translate-x-1 transition-transform">
+                            <span>Open Reels Folder</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- VIEW 2: Inside Folder List View (Initially Hidden) -->
+                <div id="folder-contents-view" class="hidden">
+                    <div class="flex items-center justify-between mb-10">
+                        <button onclick="backToFolders()" class="px-5 py-2.5 rounded-xl bg-slate-900 border border-cyan-400/40 text-cyan-400 hover:bg-cyan-400 hover:text-black font-bold text-xs tracking-wider transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Folders
+                        </button>
+                        <h3 id="current-folder-title" class="text-2xl font-extrabold text-white">Folder Contents</h3>
+                    </div>
+
+                    <div id="dynamic-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Loaded items appear here -->
                     </div>
                 </div>
 
-                <!-- Dynamic Gallery Container -->
-                <div id="dynamic-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="col-span-full text-center text-cyan-400 py-12">
-                        <i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
-                        <p class="text-sm tracking-wider">Loading creative works from portfolio...</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -596,12 +613,10 @@
     <!-- Interactive Scripts & Motion Background Engine -->
     <script>
         let allMediaItems = [];
-        let currentFilter = 'photos';
 
         async function loadGitHubWorks() {
             const username = 'fasilgit-hub';
             const repo = 'jossy-portifolio';
-            const container = document.getElementById('dynamic-works-grid');
 
             const excludedFiles = [
                 'photo_6023675213440028151_y.jpg',
@@ -643,38 +658,59 @@
                     });
                 });
 
-                renderFilteredGallery();
+                updateFolderPreviews();
 
             } catch (error) {
                 console.error(error);
-                container.innerHTML = `<p class="col-span-full text-center text-slate-400">Portfolio items will appear here once uploaded to the repository.</p>`;
             }
         }
 
-        function filterGallery(type) {
-            currentFilter = type;
-            const photoBtn = document.getElementById('btn-photo-folder');
-            const videoBtn = document.getElementById('btn-video-folder');
+        function updateFolderPreviews() {
+            const photos = allMediaItems.filter(i => i.type === 'photo');
+            const videos = allMediaItems.filter(i => i.type === 'video');
 
-            if (type === 'photos') {
-                photoBtn.classList.add('active-portal');
-                videoBtn.classList.remove('active-portal');
+            document.getElementById('photo-count-badge').innerText = `${photos.length} Shots`;
+            document.getElementById('video-count-badge').innerText = `${videos.length} Reels`;
+
+            // Populate Photo Folder Previews
+            const photoPreviewContainer = document.getElementById('folder-photo-previews');
+            if (photos.length > 0) {
+                photoPreviewContainer.innerHTML = photos.slice(0, 3).map(p => `
+                    <div class="rounded-lg overflow-hidden h-full">
+                        <img src="${encodeURI(p.name)}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
             } else {
-                videoBtn.classList.add('active-portal');
-                photoBtn.classList.remove('active-portal');
+                photoPreviewContainer.innerHTML = `<div class="flex items-center justify-center text-xs text-slate-500 col-span-3">No photos in folder yet</div>`;
             }
 
-            renderFilteredGallery();
+            // Populate Video Folder Previews
+            const videoPreviewContainer = document.getElementById('folder-video-previews');
+            if (videos.length > 0) {
+                videoPreviewContainer.innerHTML = videos.slice(0, 3).map(v => `
+                    <div class="rounded-lg overflow-hidden h-full bg-black relative flex items-center justify-center">
+                        <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
+                    </div>
+                `).join('');
+            } else {
+                videoPreviewContainer.innerHTML = `<div class="flex items-center justify-center text-xs text-slate-500 col-span-3">No reels in folder yet</div>`;
+            }
         }
 
-        function renderFilteredGallery() {
+        function openFolder(type) {
+            document.getElementById('folders-view').classList.add('hidden');
+            document.getElementById('folder-contents-view').classList.remove('hidden');
+
             const container = document.getElementById('dynamic-works-grid');
             container.innerHTML = '';
 
-            const filtered = allMediaItems.filter(item => currentFilter === 'photos' ? item.type === 'photo' : item.type === 'video');
+            const titleEl = document.getElementById('current-folder-title');
+            titleEl.innerText = type === 'photos' ? 'Photography Gallery' : 'Cinematography Reels';
+
+            const filtered = allMediaItems.filter(item => type === 'photos' ? item.type === 'photo' : item.type === 'video');
 
             if (filtered.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-12">No ${currentFilter} found in repository yet. Upload some files to GitHub to see them here automatically!</p>`;
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-12">No items found in this folder yet.</p>`;
                 return;
             }
 
@@ -712,6 +748,11 @@
 
                 container.appendChild(card);
             });
+        }
+
+        function backToFolders() {
+            document.getElementById('folder-contents-view').classList.add('hidden');
+            document.getElementById('folders-view').classList.remove('hidden');
         }
 
         loadGitHubWorks();
