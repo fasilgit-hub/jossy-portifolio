@@ -56,6 +56,39 @@
             transform: translateY(-2px);
         }
 
+        /* Folder Portal Cards */
+        .folder-portal {
+            background: rgba(16, 22, 34, 0.85);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(0, 242, 254, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .folder-portal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,242,254,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .folder-portal:hover {
+            border-color: #00f2fe;
+            box-shadow: 0 0 35px rgba(0, 242, 254, 0.35);
+            transform: translateY(-5px);
+        }
+        .folder-portal:hover::before {
+            opacity: 1;
+        }
+        .folder-portal.active-portal {
+            border-color: #00f2fe;
+            background: rgba(0, 242, 254, 0.1);
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
+        }
+
         /* Glowing Cyan Aura around the Profile Photo */
         .profile-aura {
             position: relative;
@@ -223,7 +256,7 @@
                     </div>
                 </div>
 
-                <!-- Right Profile Image (photo_6023675213440028151_y.jpg) -->
+                <!-- Right Profile Image -->
                 <div class="lg:col-span-5 flex justify-center reveal-on-scroll" data-delay="200">
                     <div class="profile-aura">
                         <div class="profile-ring w-[340px] h-[340px] sm:w-[380px] sm:h-[380px] rounded-full overflow-hidden">
@@ -244,7 +277,7 @@
             <div class="max-w-7xl mx-auto">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
-                    <!-- About Image Card (photo_6023675213440028153_y.jpg) -->
+                    <!-- About Image Card -->
                     <div class="lg:col-span-5 reveal-on-scroll">
                         <div class="glass-card p-3 rounded-2xl relative group">
                             <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-500"></div>
@@ -417,15 +450,43 @@
             </div>
         </section>
 
-        <!-- Works Section (AUTO-LOADED FROM GITHUB REPO!) -->
+        <!-- Works Section with Interactive Folders & Portals -->
         <section id="works" class="py-24 px-6 relative bg-slate-950/40">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+                <div class="text-center max-w-2xl mx-auto mb-12 reveal-on-scroll">
                     <span class="text-cyan-400 text-xs font-extrabold tracking-widest uppercase">Selected Portfolio</span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Creative Works</h2>
+                    <p class="text-slate-400 text-sm mt-3">Select a folder below to explore photography shots or cinematography reels.</p>
                 </div>
 
-                <!-- Dynamic Gallery Container: Automatically loads any image or video uploaded to GitHub -->
+                <!-- Interactive Folder Selection Portals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-16 reveal-on-scroll">
+                    <!-- Photography Folder Portal -->
+                    <div id="btn-photo-folder" onclick="filterGallery('photos')" class="folder-portal p-8 rounded-2xl flex items-center gap-6 active-portal">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                            <i class="fa-solid fa-images"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Gallery Folder</span>
+                            <h3 class="text-xl font-extrabold text-white">Explore Shots</h3>
+                            <p class="text-slate-400 text-xs mt-1">Cinematic portraits and sanctuary frames</p>
+                        </div>
+                    </div>
+
+                    <!-- Cinematography Folder Portal -->
+                    <div id="btn-video-folder" onclick="filterGallery('videos')" class="folder-portal p-8 rounded-2xl flex items-center gap-6">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shrink-0 shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                            <i class="fa-solid fa-film"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">Reels Folder</span>
+                            <h3 class="text-xl font-extrabold text-white">Explore Reels</h3>
+                            <p class="text-slate-400 text-xs mt-1">Motion highlights and color grading</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Gallery Container -->
                 <div id="dynamic-works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="col-span-full text-center text-cyan-400 py-12">
                         <i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
@@ -532,15 +593,16 @@
         </div>
     </footer>
 
-    <!-- Interactive Scripts, Auto-Gallery Loader & Motion Background -->
+    <!-- Interactive Scripts & Motion Background Engine -->
     <script>
-        // 1. AUTOMATIC GITHUB REPOSITORY MEDIA LOADER
+        let allMediaItems = [];
+        let currentFilter = 'photos';
+
         async function loadGitHubWorks() {
             const username = 'fasilgit-hub';
             const repo = 'jossy-portifolio';
             const container = document.getElementById('dynamic-works-grid');
 
-            // Files to exclude from the Works gallery (profile & about photos, code files)
             const excludedFiles = [
                 'photo_6023675213440028151_y.jpg',
                 'photo_6023675213440028153_y.jpg',
@@ -556,15 +618,12 @@
                 if (!response.ok) throw new Error('Unable to fetch repository contents');
                 
                 const files = await response.json();
-                container.innerHTML = ''; // Clear loading indicator
-
-                let mediaCount = 0;
+                allMediaItems = [];
 
                 files.forEach(file => {
                     if (file.type !== 'file') return;
                     const lowerName = file.name.toLowerCase();
 
-                    // Skip profile/about images and non-media files
                     if (excludedFiles.includes(lowerName)) return;
 
                     const isImage = imageExtensions.some(ext => lowerName.endsWith(ext));
@@ -572,51 +631,19 @@
 
                     if (!isImage && !isVideo) return;
 
-                    mediaCount++;
-
-                    // Create a clean display title from the filename
                     const cleanTitle = file.name
-                        .replace(/\.[^/.]+$/, "") // Remove file extension
-                        .replace(/[-_]/g, " ")     // Replace dashes/underscores with spaces
-                        .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize words
+                        .replace(/\.[^/.]+$/, "")
+                        .replace(/[-_]/g, " ")
+                        .replace(/\b\w/g, l => l.toUpperCase());
 
-                    const card = document.createElement('div');
-                    card.className = 'glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll active';
-
-                    if (isImage) {
-                        card.innerHTML = `
-                            <div class="relative h-72 overflow-hidden">
-                                <img src="${encodeURI(file.name)}" alt="${cleanTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
-                                <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
-                                <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
-                            </div>
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-white mb-1">${cleanTitle}</h3>
-                                <p class="text-slate-400 text-xs">Visual Portfolio Collection</p>
-                            </div>
-                        `;
-                    } else if (isVideo) {
-                        card.innerHTML = `
-                            <div class="relative h-72 overflow-hidden bg-black">
-                                <video controls preload="metadata" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                    <source src="${encodeURI(file.name)}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold pointer-events-none">Cinematography</span>
-                            </div>
-                            <div class="p-6">
-                                <h3 class="text-xl font-bold text-white mb-1">${cleanTitle}</h3>
-                                <p class="text-slate-400 text-xs">Cinematic Motion & Editing</p>
-                            </div>
-                        `;
-                    }
-
-                    container.appendChild(card);
+                    allMediaItems.push({
+                        name: file.name,
+                        type: isImage ? 'photo' : 'video',
+                        title: cleanTitle
+                    });
                 });
 
-                if (mediaCount === 0) {
-                    container.innerHTML = `<p class="col-span-full text-center text-slate-400">No media files found yet. Upload photos or videos to your GitHub repository to display them here automatically!</p>`;
-                }
+                renderFilteredGallery();
 
             } catch (error) {
                 console.error(error);
@@ -624,10 +651,72 @@
             }
         }
 
-        // Load works immediately when page opens
+        function filterGallery(type) {
+            currentFilter = type;
+            const photoBtn = document.getElementById('btn-photo-folder');
+            const videoBtn = document.getElementById('btn-video-folder');
+
+            if (type === 'photos') {
+                photoBtn.classList.add('active-portal');
+                videoBtn.classList.remove('active-portal');
+            } else {
+                videoBtn.classList.add('active-portal');
+                photoBtn.classList.remove('active-portal');
+            }
+
+            renderFilteredGallery();
+        }
+
+        function renderFilteredGallery() {
+            const container = document.getElementById('dynamic-works-grid');
+            container.innerHTML = '';
+
+            const filtered = allMediaItems.filter(item => currentFilter === 'photos' ? item.type === 'photo' : item.type === 'video');
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-400 py-12">No ${currentFilter} found in repository yet. Upload some files to GitHub to see them here automatically!</p>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden group cursor-pointer reveal-on-scroll active';
+
+                if (item.type === 'photo') {
+                    card.innerHTML = `
+                        <div class="relative h-72 overflow-hidden">
+                            <img src="${encodeURI(item.name)}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#101622] via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold">Photography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-1">${item.title}</h3>
+                            <p class="text-slate-400 text-xs">Visual Portfolio Collection</p>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="relative h-72 overflow-hidden bg-black">
+                            <video controls preload="metadata" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <source src="${encodeURI(item.name)}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-cyan-400 text-xs font-bold pointer-events-none">Cinematography</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-1">${item.title}</h3>
+                            <p class="text-slate-400 text-xs">Cinematic Motion & Editing</p>
+                        </div>
+                    `;
+                }
+
+                container.appendChild(card);
+            });
+        }
+
         loadGitHubWorks();
 
-        // 2. MOTION GRAPHICS PARTICLE & GLOWING NODES CANVAS ANIMATION
+        // Motion Graphics Particle & Glowing Nodes Canvas Animation
         const canvas = document.getElementById('motion-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -701,7 +790,7 @@
 
         animateMotionBg();
 
-        // 3. MOBILE NAVIGATION & SCROLL REVEAL
+        // Mobile Navigation Toggle
         const mobileBtn = document.getElementById('mobile-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const menuIcon = document.getElementById('menu-icon');
